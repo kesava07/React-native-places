@@ -3,7 +3,7 @@ import React from 'react'
 import { Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
 const Lists = (props) => (
-    <TouchableOpacity onPress={props.handleDelete} style={[styles.listItems, styles.shadow]}>
+    <TouchableOpacity onPress={props.onPlaceSelect} style={[styles.listItems, styles.shadow]}>
         <Image resizeMode='cover' source={props.image} style={{ width: 30, height: 30, marginRight: 10 }} />
         <Text style={{ fontSize: 20, color: 'black', fontWeight: '500' }}>{props.places}</Text>
     </TouchableOpacity>

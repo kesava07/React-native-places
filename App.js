@@ -8,11 +8,13 @@ import {
 import Lists from './Src/placesList/Lists';
 import Input from './Src/PlaceInput/Input';
 import PlaceImage from './Images/avenger.png'
+import PlaceDetails from './Src/PlaceDetails/PlaceDetails';
 
 export default class App extends React.Component {
   state = {
     placeName: '',
-    places: []
+    places: [],
+    selectedPlace: null
   };
 
   handlePlaceChange = placeName => this.setState({ placeName });
@@ -34,24 +36,47 @@ export default class App extends React.Component {
     }
   };
 
-  handleDelete = key => {
+  placeSelectionHandler = key => {
     this.setState(prevState => {
       return {
-        places: prevState.places.filter((place) => place.key !== key)
+        selectedPlace: prevState.places.find(place => {
+          return place.key === key;
+        })
+      }
+    })
+  };
+  onCancelSelection = () => this.setState({ selectedPlace: null });
+
+  handleDeletePlace = () => {
+    this.setState(prevState => {
+      return {
+        places: prevState.places.filter(place => {
+          return place.key !== prevState.selectedPlace.key;
+        }),
+        selectedPlace: null
       }
     })
   }
 
   render() {
-    const { places, placeName } = this.state;
+    const { places, placeName, selectedPlace } = this.state;
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#1a73e8" barStyle="light-content" />
+        <PlaceDetails
+          selectedPlace={selectedPlace}
+          onCancelSelection={this.onCancelSelection}
+          handleDeletePlace={this.handleDeletePlace}
+        />
         <Input handlePlaceChange={this.handlePlaceChange} placeName={placeName} handleAlert={this.handleAlert} />
         <FlatList style={{ width: '100%' }}
           data={places}
           renderItem={(info) => (
-            <Lists image={info.item.image} places={info.item.name} index={info.item.key} handleDelete={() => this.handleDelete(info.item.key)} />
+            <Lists
+              image={info.item.image}
+              places={info.item.name}
+              onPlaceSelect={() => this.placeSelectionHandler(info.item.key)}
+            />
           )}
         >
         </FlatList>
