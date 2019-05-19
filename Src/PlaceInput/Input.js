@@ -2,7 +2,7 @@ import React from 'react'
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 
 const Input = (props) => (
-    <View style={{ flexDirection: 'row', marginTop: 20, marginBottom: 20 }}>
+    <View style={{ flexDirection: 'row', marginTop: 50, marginBottom: 20 }}>
         <TextInput
             style={[styles.inputStyles, styles.shadow]}
             placeholder="Enter a place"

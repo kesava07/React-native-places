@@ -5,61 +5,41 @@ import {
   StatusBar,
   FlatList
 } from 'react-native';
+import { connect } from 'react-redux';
 import Lists from './Src/placesList/Lists';
 import Input from './Src/PlaceInput/Input';
-import PlaceImage from './Images/avenger.png'
 import PlaceDetails from './Src/PlaceDetails/PlaceDetails';
+import * as actions from './Store/Actions/index';
 
-export default class App extends React.Component {
+class App extends React.Component {
   state = {
-    placeName: '',
-    places: [],
-    selectedPlace: null
+    placeName: 'Udayasree',
   };
 
   handlePlaceChange = placeName => this.setState({ placeName });
 
-  handleAlert = () => {
+  handleAddPlace = () => {
     const { placeName } = this.state;
     if (placeName.trim() === "") {
       this.setState({ placeName: "" })
       alert("Add some thing")
     } else {
-      this.setState(prevState => {
-        return {
-          places: prevState.places.concat({
-            key: Math.random().toString(), name: prevState.placeName, image: PlaceImage
-          }),
-          placeName: ""
-        }
-      });
+      this.props.onAddPlace(this.state.placeName);
+      this.setState({ placeName: "" })
     }
   };
 
-  placeSelectionHandler = key => {
-    this.setState(prevState => {
-      return {
-        selectedPlace: prevState.places.find(place => {
-          return place.key === key;
-        })
-      }
-    })
-  };
-  onCancelSelection = () => this.setState({ selectedPlace: null });
+  placeSelectionHandler = key => this.props.onSelectPlace(key)
 
-  handleDeletePlace = () => {
-    this.setState(prevState => {
-      return {
-        places: prevState.places.filter(place => {
-          return place.key !== prevState.selectedPlace.key;
-        }),
-        selectedPlace: null
-      }
-    })
-  }
+  onCancelSelection = () => this.props.onUnselectPlace()
+
+  handleDeletePlace = () => this.props.onDeletePlace()
+
 
   render() {
-    const { places, placeName, selectedPlace } = this.state;
+    const { placeName } = this.state;
+    const { places, selectedPlace } = this.props;
+    console.log(selectedPlace, places)
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#1a73e8" barStyle="light-content" />
@@ -68,7 +48,7 @@ export default class App extends React.Component {
           onCancelSelection={this.onCancelSelection}
           handleDeletePlace={this.handleDeletePlace}
         />
-        <Input handlePlaceChange={this.handlePlaceChange} placeName={placeName} handleAlert={this.handleAlert} />
+        <Input handlePlaceChange={this.handlePlaceChange} placeName={placeName} handleAlert={this.handleAddPlace} />
         <FlatList style={{ width: '100%' }}
           data={places}
           renderItem={(info) => (
@@ -84,6 +64,22 @@ export default class App extends React.Component {
     )
   }
 };
+
+const mapStateToProps = state => ({
+  places: state.places.places,
+  selectedPlace: state.places.selectedPlace
+});
+
+const mapDispatchToProps = dispatch => ({
+  onAddPlace: (name) => dispatch(actions.addPlace(name)),
+  onDeletePlace: () => dispatch(actions.deletePlace()),
+  onSelectPlace: (key) => dispatch(actions.selectPlace(key)),
+  onUnselectPlace: () => dispatch(actions.unSelectPlace())
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

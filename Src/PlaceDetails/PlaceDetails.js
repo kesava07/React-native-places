@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Modal, Image, Button, StyleSheet } from 'react-native';
+import { View, Text, Modal, Image, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons'
 
 
 const placeDetails = (props) => {
@@ -19,8 +20,13 @@ const placeDetails = (props) => {
         >
             {modalContent}
             <View style={styles.actionsStyles}>
-                <Button title="Delete" color="#dc3545" onPress={props.handleDeletePlace} />
-                <Button title="Cancel" color="#007bff" onPress={props.onCancelSelection} />
+                <TouchableOpacity onPress={props.handleDeletePlace}>
+                    <Icon name="ios-trash" size={30} color="#dc3545" />
+                </TouchableOpacity>
+                {/* <Button title="Delete" color="#dc3545" /> */}
+                <TouchableOpacity onPress={props.onCancelSelection} >
+                    <Icon name="ios-close-circle-outline" size={30} color="#007bff" />
+                </TouchableOpacity>
             </View>
         </Modal>
     );
@@ -42,6 +48,7 @@ const styles = StyleSheet.create({
     },
     selectedContentInfo: {
         margin: 20,
+        marginTop: 50,
         alignItems: 'center'
     },
     actionsStyles: {
